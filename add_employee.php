@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header("Access-Control-Allow-Headers: X-Requested-With, Content-Type");
@@ -15,10 +12,10 @@ if (empty($employeeData)) return;
 $first_name = $employeeData["employeeName"];
 
 // Create the SQL query
-$sql = "INSERT INTO employees(first_name) VALUES (?)";
+$query = "INSERT INTO employees(first_name) VALUES (?)";
 
 // Prepare the SQL statement
-$stmt = $connection->prepare($sql);
+$stmt = $connection->prepare($query);
 
 // Bind the employee data to the SQL statement
 $stmt->bind_param("s", $first_name);

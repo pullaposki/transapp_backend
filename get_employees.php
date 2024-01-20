@@ -3,14 +3,12 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header("Access-Control-Allow-Headers: X-Requested-With, Content-Type");
 
-// connect to db
 include 'db_connection.php';
 
-// Create the SQL query
-$sql = "SELECT * FROM Employees";
+$query = "SELECT * FROM Employees";
 
 // Execute the query
-$result = $connection->query($sql);
+$result = $connection->query($query);
 
 // Check if there are results
 if ($result->num_rows > 0) {
@@ -28,5 +26,4 @@ if ($result->num_rows > 0) {
     echo "No results found";
 }
 
-// Close the database connection
 $connection->close();
