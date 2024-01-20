@@ -18,4 +18,3 @@ if ($username === 'admin' && $password === 'password') {
 } else {
     echo json_encode(['status' => 'error']);
 }
-?>
