@@ -4,6 +4,8 @@ header('Access-Control-Allow-Methods: DELETE');
 header("Access-Control-Allow-Headers: X-Requested-With, Content-Type");
 
 include 'db_connection.php';
+$connector = new DbConnector();
+$connection = $connector->connect();
 
 try {
     $employeeData = json_decode(file_get_contents('php://input'), true);

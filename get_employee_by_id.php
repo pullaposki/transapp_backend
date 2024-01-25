@@ -4,6 +4,8 @@ header('Access-Control-Allow-Methods: GET, POST');
 header("Access-Control-Allow-Headers: X-Requested-With, Content-Type");
 
 include 'db_connection.php';
+$connector = new DbConnector();
+$connection = $connector->connect();
 
 $employeeId = $_GET['id'];
 
