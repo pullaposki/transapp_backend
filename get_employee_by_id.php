@@ -7,21 +7,28 @@ include 'db_connection.php';
 $connector = new DbConnector();
 $connection = $connector->connect();
 
-$employeeId = $_GET['id'];
+try {
+    $employeeId = $_GET['id'];
 
-$stmt = $connection->prepare("SELECT * FROM employees WHERE id = ?");
-$stmt->bind_param("i", $employeeId);
+    $stmt = $connection->prepare("SELECT * FROM employees WHERE id = ?");
+    $stmt->bind_param("i", $employeeId);
 
-$stmt->execute();
+    $stmt->execute();
 
-$result = $stmt->get_result();
+    $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    $employee = $result->fetch_assoc();
-    echo json_encode(['status' => 'success', 'message' => $employee]);
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Employee not found']);
+    if ($result->num_rows > 0) {
+        $employee = $result->fetch_assoc();
+        echo json_encode(['status' => 'success', 'message' => $employee]);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Employee not found']);
+    }    
+} catch (Exception $e) {
+    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+} finally {
+    $stmt->close();
+    $connection->close();
 }
 
-$stmt->close();
-$connection->close();
+
+
