@@ -5,6 +5,8 @@ header("Access-Control-Allow-Headers: X-Requested-With, Content-Type");
 
 // connect to db
 include 'db_connection.php';
+$connector = new DbConnector();
+$connection = $connector->connect();
 
 // Get the employee data from the POST request
 $employeeData = json_decode(file_get_contents('php://input'), true);
