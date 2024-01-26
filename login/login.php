@@ -10,39 +10,39 @@ include './db/DbConnector.php';
 $connector = new DbConnector();
 $connection = $connector->connect();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($_POST)) {
-    echo json_encode(['status' => 'post not found']);
+if (!isset($data) || !isset($data['username']) || !isset($data['password'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
     return;
 }
 
-$username = $_POST['username'];
-$password = $_POST['password'];
+$username = $data['username'];
+$password = $data['password'];
 
 $stmt = $connection->prepare('SELECT * FROM employees WHERE username = ?');
+if ($stmt === false) {
+    echo json_encode(['status' => 'error', 'message' => 'Failed to prepare statement: ' . $connection->error]);
+    return;
+}
+
 $stmt->bind_param('s', $username);
-$stmt->execute();
+
+if (!$stmt->execute()) {
+    echo json_encode(['status' => 'error', 'message' => 'Failed to execute statement: ' . $stmt->error]);
+    return;
+}
+
 $result = $stmt->get_result()->fetch_assoc();
 
-if (passwordOK($password, $result) && is_array($result)) {
+if ($result && passwordOK($password, $result)) {
     $_SESSION['user_id'] = $result['id'];
     echo json_encode(['status' => 'success']);
 } else {
     echo json_encode(['status' => 'error']);
 }
 
-
-// if ($username === 'admin' && $password === 'password') {
-//     echo json_encode(['status' => 'success']);
-// } else {
-//     echo json_encode(['status' => 'error']);
-// }
-
-function passwordOK($result, $password): bool
+function passwordOK($password, $result): bool
 {
-    if ($result && password_verify($password, $result['password']))
-        return true;
-
-    return false;
+    return password_verify($password, $result['password']);
 }
