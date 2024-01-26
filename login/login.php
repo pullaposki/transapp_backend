@@ -13,7 +13,7 @@ $connection = $connector->connect();
 $_POST = json_decode(file_get_contents('php://input'), true);
 
 if (!isset($_POST)) {
-    echo "post not found";
+    echo json_encode(['status' => 'post not found']);
     return;
 }
 
