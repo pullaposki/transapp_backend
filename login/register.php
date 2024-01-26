@@ -34,6 +34,26 @@ $first_name = $data['firstName'];
 $last_name = $data['lastName'];
 $start_date = time();
 
+$check_if_username_exists = 'SELECT username FROM employees WHERE username = ?';
+$stmt = $connection->prepare($check_if_username_exists);
+if ($stmt === false) {
+  $response = ['status' => 'error', 'message' => 'Failed to prepare statement: ' . $connection->error];
+  echo json_encode($response);
+  $connection->close();
+  return;
+}
+
+$stmt->bind_param('s', $username);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+  $response = ['status' => 'error', 'message' => 'Username already exists'];
+  echo json_encode($response);
+  $connection->close();
+  return;
+}
+
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 $query = 'INSERT INTO employees (username, password, first_name, last_name, start_date) VALUES (?, ?, ?, ?, ?)';
